@@ -11,6 +11,7 @@ cd to frontend and run the command 'npm install', this installs all the node dep
 
 To run backend:
 cd to .../backend
+run 'pipenv shell'
 run 'python manage.py runserver'
 
 To run frontend:
