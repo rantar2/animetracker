@@ -2,7 +2,7 @@
  
 How to use:
 
-Must have python and npm installed\
+Must have python and npm installed
 
 Install pipenv (pip install pipenv)
 
