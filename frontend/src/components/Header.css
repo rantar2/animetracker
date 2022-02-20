@@ -1,0 +1,18 @@
+.mars {
+    width: 256px;
+    height: 82px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow: hidden;
+    font-weight: 400;
+    font-style: normal;
+    font-family: "Jacques Francois Shadow", serif;
+    color: #a70c0c;
+    font-size: 72px;
+    letter-spacing: 2px;
+    line-height: 1.2;
+    text-transform: capitalize;
+    text-align: left;
+    padding-left: 20px;
+}
