@@ -14,10 +14,11 @@ class SearchView(APIView):
     serializer_class = SearchSerializer
 
     def get(self, request):
-        return Response(React.objects.all())
+        detail = [{"userName": detail.userName} for detail in React.objects.all()]
+        return Response(detail)
 
     def post(self, request):
         serializer = SearchSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return  Response(serializer.data)
+            return Response(serializer.data)
