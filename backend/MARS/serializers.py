@@ -9,4 +9,4 @@ class UserSerializer(serializers.ModelSerializer):
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Search
-        fields = ('userName')
+        fields = ['userName']
