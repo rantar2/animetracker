@@ -7,3 +7,8 @@ class User(models.Model):
 
     def _str_(self):
         return self.title
+
+class Search(models.Model):
+    userName = models.CharField(max_length=16)
+    def _str_(self):
+        return self.title

@@ -19,7 +19,13 @@ class App extends Component {
     }
     logUserName = () => {
       console.log(this.state.userName);
-    }
+      axios
+            .post("http://localhost:8000/api/", {userName: this.state.userName})
+            .then((res) => {
+                this.setState({userName: "",});
+            })
+            .catch((err) => {});
+    };
 
     render() {
         return (
