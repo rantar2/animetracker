@@ -10,7 +10,7 @@ class App extends Component {
     componentDidMount() {
         document.title = "MARS - My Anime Recommendations"
         axios
-            .get("http://localhost:3000/api/")
+            .get("http://localhost:8000/api/")
             .then((res) => console.log(res))
             .catch((err) => console.log(err));
     }
@@ -23,10 +23,12 @@ class App extends Component {
     }
     logUserName = event => {
       event.preventDefault();
-      console.log(this.state.userName);
+      //console.log(this.state.userName);
       axios
-            .post("http://localhost:3000/api/", {userName: this.state.userName})
-            .then((res) => console.log(res))
+            .post("http://localhost:8000/api/", {userName: this.state.userName})
+            .then((res) => {
+                console.log(res.data);
+            })
             .catch((err) => console.log(err));
     };
 
