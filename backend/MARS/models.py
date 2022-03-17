@@ -1,4 +1,6 @@
 from django.db import models
+import base64
+import json
 
 # Create your models here.
 class User(models.Model):
@@ -10,5 +12,13 @@ class User(models.Model):
 
 class Search(models.Model):
     userName = models.CharField(max_length=16)
+    def _str_(self):
+        return self.title
+
+class AnimeEntry(models.Model):
+    name = models.CharField(max_length=120)  # for long titled anime
+    animeID = models.IntegerField()  # Numerical ID corresponding to anime in MAL DB
+    rank = models.IntegerField()
+    genres = models.CharField(max_length=16)  # base64 encoded string of genres
     def _str_(self):
         return self.title
