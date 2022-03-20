@@ -1,11 +1,9 @@
 from urllib import request, response
-from .models import AnimeEntry
+from .models import AnimeEntry,Genre
 from .getData import scrapeUsers
 import malclient
 import secrets
 import requests
-import base64
-import json
 
 # Notice: This should all be refactored into classes later
 
@@ -16,7 +14,7 @@ clientSecret = "ab20781868791a1ab2999c963953048d20cfd353d9d3ba98a9b06717caa73657
 
 def getList(username):
     # We can add whatever fields we need to the url later
-    url = f"https://api.myanimelist.net/v2/users/{username}/animelist?fields=genres&sort=list_score&limit=50"
+    url = f"https://api.myanimelist.net/v2/users/{username}/animelist?fields=genres&sort=list_score&limit=1000"
     response = requests.get(url, headers= {
         "X-MAL-CLIENT-ID": clientID
     })
@@ -77,38 +75,28 @@ def updateDB(n):
         })
         response.raise_for_status()
         animeList = response.json()
+        response.close()
         for anime in animeList["data"]:
             newEntry = AnimeEntry(
                 name=anime["node"]["title"],
                 rank=anime["ranking"]["rank"],
-                animeID=anime["node"]["id"],
-                genres=encode(anime["node"]["genres"])
+                animeID=anime["node"]["id"]
             )
             newEntry.save()
-        response.close()
-
-def encode(genreList):
-    """
-    Base64 encodes a list of dictionaries of anime genres, ie.
-    INPUT:   [{"id":69, "name":"slice of life"},...]
-    OUTPUT: WzEsIDIsIDNd
-    """
-    return base64.b64encode(json.dumps(genreList).encode()).decode()
-
-def decode(base64EncodedList):
-    """
-    Decodes base64 into usable list of dictionaries.
-    INPUT: WzEsIDIsIDNd
-    OUTPUT: [{"id":69, "name":"slice of life"},...]
-    """
-    return json.loads(base64.b64decode(base64EncodedList.encode()).decode())
-
+            # Iterate through a show's genres, adding genres to the Genre DB
+            # Also assigns genres to shows. This functionality is highly expensive.
+            for g in anime["node"]["genres"]:
+                gen = Genre.objects.get_or_create(genre_name=g["name"], genre_id=g["id"])
+                newEntry.genres.add(gen[0])
 
 def recommend(userList):
     scrapeUsers()
+    AnimeEntry.objects.all().delete()  # Overwrite old entries. Maybe not the most efficient...
+    #Genre.objects.all().delete()  # Don't need to run this, unless MAL changes lookup ids.
+    updateDB(1000)  #Adds/replaces first 1000 most popular shows on MAL.
+
     genreDict = {}
     titleList = []
-    #print(userList["data"])
     for i in userList["data"]:
         titleList.append(i["node"]["title"])
         for genre in i["node"]["genres"]:
@@ -118,19 +106,19 @@ def recommend(userList):
             else:
                 genreDict[gname] += 1
     topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:6]
-    recString = "Most Watched Genres: \n"
+    statString = "Most Watched Genres: \n"
+    recString = "Recommended Shows: \n"
     for genre in topGenres:
-        recString += genre + "\n"
-    recString += "\nTop Shows: \n"
+        # Basuc query, filter, exclude watched shows, add to recommendations.
+        # Blindly matches based on user's top genres. Definitely could be refined.
+        for i in AnimeEntry.objects.filter(genres__genre_name=genre):
+            if i.name not in titleList:
+                recString += i.name + "\n"
+        statString += genre + "\n"
+    statString += "\nTop Shows: \n"
     for i in range(0, 10):
-        recString += titleList[i] + "\n"
+        statString += titleList[i] + "\n"
 
-    
-    AnimeEntry.objects.all().delete()  # Overwrite old entries. Maybe not the most efficient...
-    updateDB(1000)  #Adds/replaces first 1000 most popular shows on MAL.
-    for i in AnimeEntry.objects.all():  # Example: prints lists of anime and genres from DB
-        print(i.name, decode(i.genres))
-        pass
-    
-    print(recString)
+    #print(statString)
+    #print(recString)
     return recString
