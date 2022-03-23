@@ -14,7 +14,7 @@ clientSecret = "ab20781868791a1ab2999c963953048d20cfd353d9d3ba98a9b06717caa73657
 
 def getList(username):
     # We can add whatever fields we need to the url later
-    url = f"https://api.myanimelist.net/v2/users/{username}/animelist?fields=genres&sort=list_score&limit=1000"
+    url = f"https://api.myanimelist.net/v2/users/{username}/animelist?fields=list_status,genres&sort=list_score&limit=1000"
     response = requests.get(url, headers= {
         "X-MAL-CLIENT-ID": clientID
     })
@@ -37,6 +37,7 @@ def getList(username):
     return userList
 
 def updateDB(n):
+    print("Updating db...");
     """
     Retrives n number of anime by ranking, then updates internal database. This
     should run regularly, but not too frequently as to avoid hitting MAL's limit
@@ -88,37 +89,50 @@ def updateDB(n):
             for g in anime["node"]["genres"]:
                 gen = Genre.objects.get_or_create(genre_name=g["name"], genre_id=g["id"])
                 newEntry.genres.add(gen[0])
+    print("Finished updating db");
 
 def recommend(userList):
-    scrapeUsers()
     AnimeEntry.objects.all().delete()  # Overwrite old entries. Maybe not the most efficient...
     #Genre.objects.all().delete()  # Don't need to run this, unless MAL changes lookup ids.
     updateDB(1000)  #Adds/replaces first 1000 most popular shows on MAL.
 
     genreDict = {}
     titleList = []
+    recDict = {}
     for i in userList["data"]:
+        print(i)
         titleList.append(i["node"]["title"])
+        # Genre list influenced by user score
         for genre in i["node"]["genres"]:
             gname = genre["name"]
             if not gname in genreDict:
-                genreDict[gname] = 1
+                genreDict[gname] = i["list_status"]["score"]
             else:
-                genreDict[gname] += 1
+                genreDict[gname] += i["list_status"]["score"]
     topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:6]
     statString = "Most Watched Genres: \n"
     recString = "Recommended Shows: \n"
     for genre in topGenres:
-        # Basuc query, filter, exclude watched shows, add to recommendations.
+        # Basic query, filter, exclude watched shows, add to recommendations.
         # Blindly matches based on user's top genres. Definitely could be refined.
         for i in AnimeEntry.objects.filter(genres__genre_name=genre):
             if i.name not in titleList:
-                recString += i.name + "\n"
+                # Score defines how highly a recommendation should be considered in our algorithm, currently is pretty basic
+                score = 1 / (topGenres.index(genre) + 1)
+                if i.name not in recDict:
+                    recDict[i.name] = score
+                else:
+                    recDict[i.name] += score
         statString += genre + "\n"
+
+    recDict = sorted(recDict, key=recDict.get, reverse=True)
+    for title in recDict:
+        recString += title + "\n"
+
     statString += "\nTop Shows: \n"
     for i in range(0, 10):
         statString += titleList[i] + "\n"
-
+    print(titleList)
     #print(statString)
     #print(recString)
     return recString
