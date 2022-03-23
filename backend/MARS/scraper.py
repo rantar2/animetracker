@@ -2,6 +2,8 @@ import malclient
 import requests
 import time
 
+
+# Unused, kept for future reference
 def scrapeUsers():
     url = "https://myanimelist.net/users.php"
     names = []

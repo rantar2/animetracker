@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from .models import *
 from rest_framework.response import Response
 from .serializers import *
-from .recommender import getList, recommend
+from .recommender import Recommender
 
 # Create your views here.
 class UserView(viewsets.ModelViewSet):
@@ -22,6 +22,7 @@ class SearchView(APIView):
         serializer = SearchSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            userList = getList(serializer.data["userName"])
-            recString = recommend(userList)
+            userList = Recommender.getList(serializer.data["userName"])
+            # Below, we limit ourselves to 20 top entries, and 5 genres
+            recString = Recommender.recommend(userList, 20, 5)
             return Response(recString)

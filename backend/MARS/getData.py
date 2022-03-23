@@ -7,6 +7,8 @@ import base64
 import json
 import time
 
+
+# Unused, kept for future reference
 def scrapeUsers():
     url = "https://myanimelist.net/users.php"
     names = []
