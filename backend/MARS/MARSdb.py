@@ -40,7 +40,7 @@ class Database:
             # We can also change the "fields" to include other data.
 
             entriesToRetrive = min(500,n-entriesRetrived)
-            url = f"https://api.myanimelist.net/v2/anime/ranking?ranking_type=bypopularity&fields=genres&limit={entriesToRetrive}&offset={entriesRetrived}"
+            url = f"https://api.myanimelist.net/v2/anime/ranking?ranking_type=bypopularity&fields=genres,main_picture,synopsis&limit={entriesToRetrive}&offset={entriesRetrived}"
             response = requests.get(url, headers= {
                 "X-MAL-CLIENT-ID": clientID
             })
@@ -51,7 +51,9 @@ class Database:
                 newEntry = AnimeEntry(
                     name=anime["node"]["title"],
                     rank=anime["ranking"]["rank"],
-                    animeID=anime["node"]["id"]
+                    animeID=anime["node"]["id"],
+                    main_picture=anime["node"]["main_picture"]["medium"],
+                    synopsis=anime["node"]["synopsis"]
                 )
                 newEntry.save()
                 # Iterate through a show's genres, adding genres to the Genre DB

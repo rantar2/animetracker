@@ -27,7 +27,22 @@ class App extends Component {
       axios
             .post("http://localhost:8000/api/", {userName: this.state.userName})
             .then((res) => {
-                console.log(res.data);
+                /* Array of shows with the corresponding data:
+                    name: Anime title
+                    main_picture: Main picture for this specific anime, contains url to image
+                    synopsis: Anime synopsis
+                    animeID: ID of anime on MAL
+                    rank: Rank of anime in terms of popularity
+
+                    Not working yet:
+                    genres: Only returns IDs of genres, not genre names, will later be fixed
+                */
+                var recommended = JSON.parse(res.data).anime;
+                console.log(recommended);
+                console.log("Recommended shows:");
+                for(var i = 0; i < recommended.length; i++) {
+                    console.log(recommended[i].name);
+                }
             })
             .catch((err) => console.log(err));
     };

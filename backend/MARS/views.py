@@ -25,4 +25,5 @@ class SearchView(APIView):
             userList = Recommender.getList(serializer.data["userName"])
             # Below, we limit ourselves to 20 top entries, and 5 genres
             recString = Recommender.recommend(userList, 20, 5)
+            
             return Response(recString)

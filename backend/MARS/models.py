@@ -20,6 +20,8 @@ class AnimeEntry(models.Model):
     animeID = models.IntegerField()  # Numerical ID corresponding to anime in MAL DB
     rank = models.IntegerField()
     genres = models.ManyToManyField("Genre")
+    main_picture = models.CharField(max_length=120)
+    synopsis = models.CharField(max_length=8192)
     def _str_(self):
         return self.title
 

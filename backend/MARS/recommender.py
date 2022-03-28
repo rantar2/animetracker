@@ -1,6 +1,8 @@
 from urllib import request, response
 from .models import AnimeEntry,Genre
 from .MARSdb import Database
+from .serializers import *
+from rest_framework.renderers import JSONRenderer
 import secrets
 import requests
 
@@ -53,7 +55,7 @@ class Recommender:
                 else:
                     genreDict[gname] += i["list_status"]["score"]
         topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:genrelimit]
-        recString = "Recommended Shows: \n"
+        recString = "{\"anime\":["
         for genre in topGenres:
             # Basic query, filter, exclude watched shows, add to recommendations.
             # Matches based on user's top genres. Definitely could be refined.
@@ -69,6 +71,12 @@ class Recommender:
 
         recDict = sorted(recDict, key=recDict.get, reverse=True)[:reclimit]
         for title in recDict:
-            recString += title + "\n"
+            anime = AnimeEntry.objects.get(name=title)
+            serializer = AnimeSerializer(anime)
+            print(serializer.data)
+            content = JSONRenderer().render(serializer.data).decode("utf-8")
+            recString += content + ","
+        recString = recString[:-1]
+        recString += "]}"
 
         return recString

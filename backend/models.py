@@ -13,6 +13,8 @@ class MarsAnimeentry(models.Model):
     rank = models.IntegerField()
     animeid = models.IntegerField(db_column='animeID')  # Field name made lowercase.
     genres = models.CharField(max_length=512)
+    main_picture = models.CharField(max_length=120)
+    synopsis = models.CharField(max_length=8192)
 
     class Meta:
         managed = False
