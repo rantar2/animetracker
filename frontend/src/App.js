@@ -6,6 +6,10 @@ import axios from "axios";
 class App extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+          userName: "",
+          recommended: [],
+        }
     }
     componentDidMount() {
         document.title = "MARS - My Anime Recommendations"
@@ -15,9 +19,6 @@ class App extends Component {
             .catch((err) => console.log(err));
     }
 
-    state = {
-      userName: ""
-    }
     handleInput = event => {
       this.setState({userName: event.target.value});
     }
@@ -37,11 +38,14 @@ class App extends Component {
                     Not working yet:
                     genres: Only returns IDs of genres, not genre names, will later be fixed
                 */
-                var recommended = JSON.parse(res.data).anime;
-                console.log(recommended);
+                var rec = JSON.parse(res.data).anime;
+                console.log(rec);
+                this.setState({
+                  recommended: rec,
+                })
                 console.log("Recommended shows:");
-                for(var i = 0; i < recommended.length; i++) {
-                    console.log(recommended[i].name);
+                for(var i = 0; i < rec.length; i++) {
+                    console.log(rec[i].name);
                 }
             })
             .catch((err) => console.log(err));
@@ -59,6 +63,16 @@ class App extends Component {
                       <input onChange={this.handleInput} placeholder="Enter MAL Username"/>
                       <button onClick={this.logUserName}> Search </button>
                     </div>
+                </div>
+                <div className="Recommendations">
+                  <ul>
+                    {this.state.recommended.map((entry,key)=>{
+                      return (
+                        <div key={key}>
+                          {entry.name}
+                        </div>
+                      )})}
+                  </ul>
                 </div>
             </div>
         );

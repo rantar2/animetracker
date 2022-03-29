@@ -39,7 +39,6 @@ class Recommender:
         return userList
 
     def recommend(userList, reclimit, genrelimit):
-        Database.updateDB(1000)  #Adds/replaces first 1000 most popular shows on MAL.
 
         genreDict = {}
         titleList = []
