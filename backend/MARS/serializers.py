@@ -14,4 +14,4 @@ class SearchSerializer(serializers.ModelSerializer):
 class AnimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnimeEntry
-        fields = ['name', 'animeID', 'rank', 'genres', 'main_picture', 'synopsis']
+        fields = ['name', 'MAL_ID', 'rank', 'genres', 'main_picture', 'synopsis']

@@ -5,6 +5,7 @@ from .models import *
 from rest_framework.response import Response
 from .serializers import *
 from .recommender import Recommender
+from .MARSdb import Database
 
 # Create your views here.
 class UserView(viewsets.ModelViewSet):

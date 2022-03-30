@@ -17,7 +17,7 @@ class Search(models.Model):
 
 class AnimeEntry(models.Model):
     name = models.CharField(max_length=120)  # for long titled anime
-    animeID = models.IntegerField()  # Numerical ID corresponding to anime in MAL DB
+    MAL_ID = models.IntegerField()  # Numerical ID corresponding to anime in MAL DB
     rank = models.IntegerField()
     genres = models.ManyToManyField("Genre")
     main_picture = models.CharField(max_length=120)

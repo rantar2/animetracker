@@ -51,7 +51,7 @@ class Database:
                 newEntry = AnimeEntry(
                     name=anime["node"]["title"],
                     rank=anime["ranking"]["rank"],
-                    animeID=anime["node"]["id"],
+                    MAL_ID=anime["node"]["id"],
                     main_picture=anime["node"]["main_picture"]["medium"],
                     synopsis=anime["node"]["synopsis"]
                 )

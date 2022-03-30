@@ -2,6 +2,7 @@ import './App.css';
 import React, { Component } from 'react';
 import Header from "./components/Header";
 import axios from "axios";
+import ReactBasicTable from "react-basic-table"
 
 class App extends Component {
     constructor(props) {
@@ -9,6 +10,7 @@ class App extends Component {
         this.state = {
           userName: "",
           recommended: [],
+          ready: false,
         }
     }
     componentDidMount() {
@@ -41,7 +43,8 @@ class App extends Component {
                 var rec = JSON.parse(res.data).anime;
                 console.log(rec);
                 this.setState({
-                  recommended: rec,
+                  recommended: rec,  // Update state variable with results
+                  ready: true,
                 })
                 console.log("Recommended shows:");
                 for(var i = 0; i < rec.length; i++) {
@@ -52,6 +55,27 @@ class App extends Component {
     };
 
     render() {
+      if (this.state.ready) {
+        var cols = ["Relevance"]
+        var rows = []
+        for(var p in this.state.recommended[0]) {
+          cols.push(p.replace(/^\w/, (c) => c.toUpperCase()).replace("_"," "))
+        }
+        for(var i=0; i< this.state.recommended.length;i++) {
+          var entry = [
+            <span data-reactbasictable-value={"Entry" + i+1}> {i+1} </span>
+          ]
+          for(var key in this.state.recommended[i]) {
+            if (key=="main_picture") {
+              entry.push(<a href={"https://myanimelist.net/anime/"+this.state.recommended[i]["MAL_ID"]}>
+              <img className="thumbnail" src={this.state.recommended[i][key]}>
+              </img></a>)
+            } else {
+              entry.push(<span data-reactbasictable-value={key.toString()}> {this.state.recommended[i][key]} </span>)
+            }
+          }
+          rows.push(entry)
+      }}
         return (
             <div className="App">
                 <Header />
@@ -65,14 +89,10 @@ class App extends Component {
                     </div>
                 </div>
                 <div className="Recommendations">
-                  <ul>
-                    {this.state.recommended.map((entry,key)=>{
-                      return (
-                        <div key={key}>
-                          {entry.name}
-                        </div>
-                      )})}
-                  </ul>
+                  {this.state.ready
+                    ? <ReactBasicTable columns={cols} rows={rows} pageSize="2"/>
+                    : <ul>{"Recommendations will appear here."}</ul>
+                  }
                 </div>
             </div>
         );

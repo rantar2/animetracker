@@ -57,7 +57,7 @@ class Recommender:
         recString = "{\"anime\":["
         for genre in topGenres:
             # Basic query, filter, exclude watched shows, add to recommendations.
-            # Matches based on user's top genres. Definitely could be refined.
+            # Matches solely based on user's top genres. Definitely could be refined.
             for i in AnimeEntry.objects.filter(genres__genre_name=genre):
                 if i.name not in titleList:
                     # MAL user score defines how highly a recommendation should be considered in our algorithm.
@@ -72,7 +72,7 @@ class Recommender:
         for title in recDict:
             anime = AnimeEntry.objects.get(name=title)
             serializer = AnimeSerializer(anime)
-            print(serializer.data)
+            #print(serializer.data)
             content = JSONRenderer().render(serializer.data).decode("utf-8")
             recString += content + ","
         recString = recString[:-1]
