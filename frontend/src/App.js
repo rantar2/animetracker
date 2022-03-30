@@ -79,18 +79,20 @@ class App extends Component {
                 <Header />
                 <div  className="App-body">
                     <h2>
-                        Find Anime Recommendations
+                        Find Anime Recommendations:
                     </h2>
                     <div className="Search-Bar">
                       <input onChange={this.handleInput} placeholder="Enter MAL Username"/>
                       <button onClick={this.logUserName}> Search </button>
                     </div>
                 </div>
-                <div className="Recommendations">
-                  {this.state.ready
-                    ? <ReactBasicTable columns={cols} rows={rows} pageSize="2"/>
-                    : <ul>{"Recommendations will appear here."}</ul>
-                  }
+                <div className="Recommendations-Container">
+                    <div className="Recommendations">
+                        {this.state.ready
+                            ? <ReactBasicTable columns={cols} rows={rows} pageSize="2"/>
+                            : <ul>{"Recommendations will appear here."}</ul>
+                        }
+                    </div>
                 </div>
             </div>
         );
