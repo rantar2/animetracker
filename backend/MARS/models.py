@@ -28,3 +28,5 @@ class AnimeEntry(models.Model):
 class Genre(models.Model):
     genre_name = models.CharField(max_length=16)
     genre_id = models.IntegerField()
+    def _str_(self):
+        return "%s"%self.genre_name

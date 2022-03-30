@@ -36,9 +36,7 @@ class App extends Component {
                     synopsis: Anime synopsis
                     animeID: ID of anime on MAL
                     rank: Rank of anime in terms of popularity
-
-                    Not working yet:
-                    genres: Only returns IDs of genres, not genre names, will later be fixed
+                    genres: Returns each genre the show contains in a string
                 */
                 var rec = JSON.parse(res.data).anime;
                 console.log(rec);

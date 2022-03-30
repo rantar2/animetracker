@@ -15,3 +15,14 @@ class AnimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnimeEntry
         fields = ['name', 'MAL_ID', 'rank', 'genres', 'main_picture', 'synopsis']
+        depth = 1
+
+    def to_representation(self, instance):
+        # Override in order to properly display genres
+        repr = super().to_representation(instance)
+        genreStr = ""
+        for genre in repr['genres']:
+            genreStr += str(genre["genre_name"]) + ", "
+        genreStr = genreStr[:-2]
+        repr['genres'] = genreStr
+        return repr
