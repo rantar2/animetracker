@@ -2,7 +2,8 @@ import './App.css';
 import React, { Component } from 'react';
 import Header from "./components/Header";
 import axios from "axios";
-import ReactBasicTable from "react-basic-table"
+import ReactBasicTable from "react-basic-table";
+import { Multiselect } from "multiselect-react-dropdown";
 
 class App extends Component {
     constructor(props) {
@@ -10,7 +11,8 @@ class App extends Component {
         this.state = {
           userName: "",
           recommended: [],
-          genres: [],
+          all_genres: [],
+          selected_genres: [],
           ready: false,
         }
     }
@@ -20,10 +22,12 @@ class App extends Component {
             .get("http://localhost:8000/api/")
             .then((res) => {
               console.log(res)
+
               var genreList = JSON.parse(res.data).genre_list
               this.setState({
-                genres: genreList,
+                all_genres: genreList,
               })
+              console.log(this.state.all_genres)
             })
             .catch((err) => console.log(err));
     }
@@ -59,7 +63,12 @@ class App extends Component {
             })
             .catch((err) => console.log(err));
     };
-
+    onSelect(selectedList, selectedItem) {
+      console.log("Added: " + selectedItem.genre_name)
+    }
+    onRemove(selectedList, removedItem) {
+      console.log("Removed: " + removedItem.genre_name)
+    }
     render() {
       if (this.state.ready) {
         var cols = ["Relevance"]
@@ -93,9 +102,9 @@ class App extends Component {
                       <input onChange={this.setUserName} placeholder="Enter MAL Username"/>
                       <button onClick={this.executeSearch}> Search </button>
                     </div>
-                </div>
-                <div className="Genre-Options">
-
+                    <div className="Genre-Dropdown">
+                      <Multiselect options={this.state.all_genres} onSelect={this.onSelect} onRemove={this.onRemove} displayValue="genre_name"/>
+                    </div>
                 </div>
                 <div className="Recommendations-Container">
                     <div className="Recommendations">
