@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from .serializers import *
 from .recommender import Recommender
 from .MARSdb import Database
+from rest_framework.renderers import JSONRenderer
 
 # Create your views here.
 class UserView(viewsets.ModelViewSet):
@@ -17,7 +18,15 @@ class SearchView(APIView):
 
     def get(self, request):
         print(request)
-        return Response("get")
+        returnString = "{\"genre_list\":["
+        for item in Genre.objects.all():
+            serializer = GenreSerializer(item)
+            content = JSONRenderer().render(serializer.data).decode("utf-8")
+            print(content)
+            returnString += content + ","
+        returnString = returnString[:-1]
+        returnString += "]}"
+        return Response(returnString)
 
     def post(self, request):
         serializer = SearchSerializer(data=request.data)

@@ -26,3 +26,9 @@ class AnimeSerializer(serializers.ModelSerializer):
         genreStr = genreStr[:-2]
         repr['genres'] = genreStr
         return repr
+
+class GenreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Genre
+        fields = ["genre_name", "genre_id"]
+        depth = 1

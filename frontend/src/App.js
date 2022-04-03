@@ -10,6 +10,7 @@ class App extends Component {
         this.state = {
           userName: "",
           recommended: [],
+          genres: [],
           ready: false,
         }
     }
@@ -17,13 +18,20 @@ class App extends Component {
         document.title = "MARS - My Anime Recommendations"
         axios
             .get("http://localhost:8000/api/")
-            .then((res) => console.log(res))
+            .then((res) => {
+              console.log(res)
+              var genreList = JSON.parse(res.data).genre_list
+              this.setState({
+                genres: genreList,
+              })
+            })
             .catch((err) => console.log(err));
     }
 
     setUserName = event => {
       this.setState({userName: event.target.value});
     }
+
     executeSearch = event => {
       event.preventDefault();
       //console.log(this.state.userName);
@@ -85,6 +93,9 @@ class App extends Component {
                       <input onChange={this.setUserName} placeholder="Enter MAL Username"/>
                       <button onClick={this.executeSearch}> Search </button>
                     </div>
+                </div>
+                <div className="Genre-Options">
+
                 </div>
                 <div className="Recommendations-Container">
                     <div className="Recommendations">
