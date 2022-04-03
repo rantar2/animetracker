@@ -27,7 +27,7 @@ class Database:
         """
         print("Updating db...");
         AnimeEntry.objects.all().delete()  # Remove old entries. Maybe not the most efficient...
-        #Genre.objects.all().delete()  # Don't need to run this, unless MAL changes lookup ids.
+        Genre.objects.all().delete()  # Don't need to run this, unless MAL changes lookup ids.
         n = n//1  # Number of iterations. Floor divide to eliminate float values.
         if n<=0:
             print(f"Defaulting to 500 entries.")
@@ -62,4 +62,4 @@ class Database:
                     gen = Genre.objects.get_or_create(genre_name=g["name"], genre_id=g["id"])
                     newEntry.genres.add(gen[0])
             entriesRetrived += entriesToRetrive
-        print(f"Finished updating db. Currently contains {AnimeEntry.objects.count()} entries.");
+        print(f"Finished updating db. Currently contains {AnimeEntry.objects.count()} entries from {Genre.objects.count()} genres.");

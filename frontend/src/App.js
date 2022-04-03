@@ -21,10 +21,10 @@ class App extends Component {
             .catch((err) => console.log(err));
     }
 
-    handleInput = event => {
+    setUserName = event => {
       this.setState({userName: event.target.value});
     }
-    logUserName = event => {
+    executeSearch = event => {
       event.preventDefault();
       //console.log(this.state.userName);
       axios
@@ -82,8 +82,8 @@ class App extends Component {
                         Find Anime Recommendations:
                     </h2>
                     <div className="Search-Bar">
-                      <input onChange={this.handleInput} placeholder="Enter MAL Username"/>
-                      <button onClick={this.logUserName}> Search </button>
+                      <input onChange={this.setUserName} placeholder="Enter MAL Username"/>
+                      <button onClick={this.executeSearch}> Search </button>
                     </div>
                 </div>
                 <div className="Recommendations-Container">
