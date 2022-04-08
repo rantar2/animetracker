@@ -38,22 +38,26 @@ class Recommender:
 
         return userList
 
-    def recommend(userList, reclimit, genrelimit):
+    def recommend(userList, selectedGenres, reclimit, genrelimit):
 
         genreDict = {}
         titleList = []
         recDict = {}
-        for i in userList["data"]:
-            titleList.append(i["node"]["title"])
-            # Genre list influenced by user score
-            for genre in i["node"]["genres"]:
-                gname = genre["name"]
-                # Create or update the running raw score of a certain genre.
-                if not gname in genreDict:
-                    genreDict[gname] = i["list_status"]["score"]
-                else:
-                    genreDict[gname] += i["list_status"]["score"]
-        topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:genrelimit]
+        topGenres = []
+        if(len(selectedGenres) == 0):
+            for i in userList["data"]:
+                titleList.append(i["node"]["title"])
+                # Genre list influenced by user score
+                for genre in i["node"]["genres"]:
+                    gname = genre["name"]
+                    # Create or update the running raw score of a certain genre.
+                    if not gname in genreDict:
+                        genreDict[gname] = i["list_status"]["score"]
+                    else:
+                        genreDict[gname] += i["list_status"]["score"]
+            topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:genrelimit]
+        else:
+            topGenres = selectedGenres[:genrelimit]
         recString = "{\"anime\":["
         for genre in topGenres:
             # Basic query, filter, exclude watched shows, add to recommendations.

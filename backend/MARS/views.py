@@ -7,6 +7,7 @@ from .serializers import *
 from .recommender import Recommender
 from .MARSdb import Database
 from rest_framework.renderers import JSONRenderer
+import json
 
 # Create your views here.
 class UserView(viewsets.ModelViewSet):
@@ -17,12 +18,12 @@ class SearchView(APIView):
     serializer_class = SearchSerializer
 
     def get(self, request):
-        print(request)
+        #print(request)
         returnString = "{\"genre_list\":["
         for item in Genre.objects.all():
             serializer = GenreSerializer(item)
             content = JSONRenderer().render(serializer.data).decode("utf-8")
-            print(content)
+            #print(content)
             returnString += content + ","
         returnString = returnString[:-1]
         returnString += "]}"
@@ -32,9 +33,10 @@ class SearchView(APIView):
         serializer = SearchSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
+            selectedGenres = json.loads(serializer.data["selected_genres"])
             #Database.updateDB(1000)  #Adds/replaces first 1000 most popular shows on MAL.
             userList = Recommender.getList(serializer.data["userName"])
             # Below, we limit ourselves to 20 top entries, and 5 genres
-            recString = Recommender.recommend(userList, 20, 5)
+            recString = Recommender.recommend(userList, selectedGenres, 20, 5)
 
             return Response(recString)

@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Search
-        fields = ['userName']
+        fields = ['userName', 'selected_genres']
 
 class AnimeSerializer(serializers.ModelSerializer):
     class Meta:

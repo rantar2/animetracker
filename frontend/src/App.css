@@ -43,13 +43,44 @@ html, body {
     margin-bottom: 50px;
 }
 
-.Search-Bar {
+.Top-Box {
     display: flex;
     flex: 1 1 auto;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+.Middle-Box {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: center;
+    flex-direction: column;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+.Bottom-Box {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.Search-Bar {
+    display: relative;
     align-items: flex-start;
     justify-content: center;
     font-size: calc(10px + 2vmin);
     color: white;
+    margin-bottom: 16px;
+}
+.Genre-Dropdown {
+    display: relative;
+    align-items: flex-end;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: black;
+    margin-bottom: 16px;
 }
 
 .App-link {

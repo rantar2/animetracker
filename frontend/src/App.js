@@ -16,6 +16,7 @@ class App extends Component {
           ready: false,
         }
     }
+
     componentDidMount() {
         document.title = "MARS - My Anime Recommendations"
         axios
@@ -35,12 +36,20 @@ class App extends Component {
     setUserName = event => {
       this.setState({userName: event.target.value});
     }
+    setGenres = event => {
+        console.log("List: " + JSON.stringify(event));
+        var list = [];
+        for(var i = 0; i < event.length; i++) {
+            list.push(event[i].genre_name);
+        }
+        this.setState({selected_genres: JSON.stringify(list)});
+    }
 
     executeSearch = event => {
       event.preventDefault();
       //console.log(this.state.userName);
       axios
-            .post("http://localhost:8000/api/", {userName: this.state.userName})
+            .post("http://localhost:8000/api/", {userName: this.state.userName, selected_genres: this.state.selected_genres})
             .then((res) => {
                 /* Array of shows with the corresponding data:
                     name: Anime title
@@ -64,10 +73,13 @@ class App extends Component {
             .catch((err) => console.log(err));
     };
     onSelect(selectedList, selectedItem) {
-      console.log("Added: " + selectedItem.genre_name)
+        console.log("Added: " + selectedItem.genre_name)
+        this.setState(prevState => ({
+            selected_genres: [...prevState.selected_genres, selectedItem]
+        }))
     }
     onRemove(selectedList, removedItem) {
-      console.log("Removed: " + removedItem.genre_name)
+        console.log("Removed: " + removedItem.genre_name)
     }
     render() {
       if (this.state.ready) {
@@ -95,15 +107,21 @@ class App extends Component {
             <div className="App">
                 <Header />
                 <div  className="App-body">
-                    <h2>
-                        Find Anime Recommendations:
-                    </h2>
-                    <div className="Search-Bar">
-                      <input onChange={this.setUserName} placeholder="Enter MAL Username"/>
-                      <button onClick={this.executeSearch}> Search </button>
+                    <div className="Top-Box">
+                        <h2>
+                            Find Anime Recommendations:
+                        </h2>
                     </div>
-                    <div className="Genre-Dropdown">
-                      <Multiselect options={this.state.all_genres} onSelect={this.onSelect} onRemove={this.onRemove} displayValue="genre_name"/>
+                    <div className="Middle-Box">
+                        <div className="Search-Bar">
+                            <input onChange={this.setUserName} placeholder="Enter MAL Username"/>
+                            <button onClick={this.executeSearch}> Search </button>
+                        </div>
+                        <div className="Genre-Dropdown">
+                            <Multiselect options={this.state.all_genres} onSelect={this.setGenres} onRemove={this.setGenres} displayValue="genre_name"/>
+                        </div>
+                    </div>
+                    <div className="Bottom-Box">
                     </div>
                 </div>
                 <div className="Recommendations-Container">

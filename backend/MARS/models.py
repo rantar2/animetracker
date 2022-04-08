@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 import base64
 import json
 
@@ -12,8 +13,11 @@ class User(models.Model):
 
 class Search(models.Model):
     userName = models.CharField(max_length=16)
+    selected_genres = models.CharField(max_length=8192)
     def _str_(self):
         return self.title
+
+
 
 class AnimeEntry(models.Model):
     name = models.CharField(max_length=120)  # for long titled anime
