@@ -1,0 +1,53 @@
+/* Recommendations table styling */
+
+.Recommendations-Container {
+    background-color: #222;
+    padding-left: 16px;
+    padding-right: 16px;
+    color: white;
+}
+
+.Recommendations {
+    background-color: #222;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: white;
+}
+
+.Recommendations table {
+    box-shadow: 0 0 20px rgba(60,60,60,0.1);
+    border-top: none !important;
+}
+
+.Recommendations thead {
+    background-color: #333;
+}
+.Recommendations tr {
+    background-color: #222;
+}
+.Recommendations th {
+    background-color: #333;
+    color: white;
+    border-top: none !important
+}
+.Recommendations span {
+    color: white;
+}
+.Recommendations td {
+    background-color: rgba(60, 60, 60, 0.3);
+}
+  
+.pagination a {
+    color: white;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    transition: background-color .3s;
+}
+.pagination a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+  
+.pagination a:hover:not(.active) {background-color: rgba(100, 100, 100, 0.5);}

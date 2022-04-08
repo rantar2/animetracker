@@ -3,14 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 import base64
 import json
 
-# Create your models here.
-class User(models.Model):
-    username = models.CharField(max_length=120)
-    password = models.CharField(max_length=120)
-
-    def _str_(self):
-        return self.title
-
+# User Search model, contains all the information sent from the frontend to be read in the backend
 class Search(models.Model):
     userName = models.CharField(max_length=16)
     selected_genres = models.CharField(max_length=8192)
@@ -18,7 +11,7 @@ class Search(models.Model):
         return self.title
 
 
-
+# AnimeEntry model, encapsulates all relevent information for a specific anime for storage in our database
 class AnimeEntry(models.Model):
     name = models.CharField(max_length=120)  # for long titled anime
     MAL_ID = models.IntegerField()  # Numerical ID corresponding to anime in MAL DB
@@ -29,6 +22,7 @@ class AnimeEntry(models.Model):
     def _str_(self):
         return self.title
 
+# Genre model, encapsulates all relevent information for a specific genre for storage in our database
 class Genre(models.Model):
     genre_name = models.CharField(max_length=16)
     genre_id = models.IntegerField()

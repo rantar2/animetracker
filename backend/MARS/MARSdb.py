@@ -4,7 +4,7 @@ import secrets
 import requests
 clientID = "54082defd56574106879639dd3f91e47"
 
-
+# Database management class, sole responsibility is to update database with new information from MAL
 class Database:
     def updateDB(n):
         """

@@ -10,7 +10,7 @@ import requests
 clientID = "54082defd56574106879639dd3f91e47"
 clientSecret = "ab20781868791a1ab2999c963953048d20cfd353d9d3ba98a9b06717caa73657"
 
-
+# Recommender responsibilities: return a user's list from MAL (getList), and make recommmendations for the user (recommend)
 class Recommender:
     def getList(username):
         """
@@ -39,11 +39,13 @@ class Recommender:
         return userList
 
     def recommend(userList, selectedGenres, reclimit, genrelimit):
-
+        # First creates a top genres list, then 
         genreDict = {}
         titleList = []
         recDict = {}
         topGenres = []
+
+        # Create a top genres list containing either the user selected genres or the algorithmically decided best genres
         if(len(selectedGenres) == 0):
             for i in userList["data"]:
                 titleList.append(i["node"]["title"])
@@ -58,6 +60,8 @@ class Recommender:
             topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:genrelimit]
         else:
             topGenres = selectedGenres[:genrelimit]
+
+        # Initialize the recommendations string (a JSON list of objects) and score shows based on how well they match the user criteria
         recString = "{\"anime\":["
         for genre in topGenres:
             # Basic query, filter, exclude watched shows, add to recommendations.
@@ -72,6 +76,7 @@ class Recommender:
                     else:
                         recDict[i.name] += score
 
+        # Sort the shows by their score and finialize the recommendations string to send to client
         recDict = sorted(recDict, key=recDict.get, reverse=True)[:reclimit]
         for title in recDict:
             anime = AnimeEntry.objects.get(name=title)

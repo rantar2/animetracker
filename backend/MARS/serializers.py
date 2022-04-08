@@ -1,16 +1,13 @@
 from rest_framework import serializers
 from .models import *
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'password')
-
+# Used to translate the client's input into readable data for the backend
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Search
         fields = ['userName', 'selected_genres']
 
+# Used to transform AnimeEntry models from objects in our database into a readable a format, and visa versa
 class AnimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnimeEntry
@@ -27,6 +24,7 @@ class AnimeSerializer(serializers.ModelSerializer):
         repr['genres'] = genreStr
         return repr
 
+# Used to transform Genre models from objects in our database into a readable a format, and visa versa
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
