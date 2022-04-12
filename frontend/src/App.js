@@ -13,9 +13,10 @@ class App extends Component {
         this.state = {
             userName: "",
             recommended: [],
-            all_genres: [],
-            selected_genres: "[]",
+            allGenres: [],
+            selectedGenres: "[]",
             ready: false,
+            maxResults: 20
         }
     }
 
@@ -31,10 +32,8 @@ class App extends Component {
                   return (a.genre_name < b.genre_name) ? -1 :
                    (a.genre_name > b.genre_name) ? 1 : 0;
                 });
-                this.setState({
-                  all_genres: genreList,
-                })
-                console.log(this.state.all_genres)
+                this.setState({allGenres: genreList});
+                console.log(this.state.allGenres)
             })
             .catch((err) => console.log(err));
     }
@@ -51,9 +50,18 @@ class App extends Component {
             list.push(event[i].genre_name);
         }
         if(list.length === 0)
-            this.setState({selected_genres: "[]"});
+            this.setState({selectedGenres: "[]"});
         else
-            this.setState({selected_genres: JSON.stringify(list)});
+            this.setState({selectedGenres: JSON.stringify(list)});
+    }
+
+    // Updates user preference for maximum results generated
+    setMaxGenres = event => {
+      var n = event.target.value.replace(/\D/g, '')
+      if (n == "")
+        n="0";
+      n = parseInt(n)
+      this.setState({maxResults:n});
     }
 
     // Sends all relevent information from this.state to the backend
@@ -61,7 +69,11 @@ class App extends Component {
         event.preventDefault();
         //console.log(this.state.userName);
         axios
-            .post("http://localhost:8000/api/", {userName: this.state.userName, selected_genres: this.state.selected_genres})
+            .post("http://localhost:8000/api/", {
+              userName: this.state.userName,
+              selected_genres: this.state.selectedGenres,
+              max_results: Math.max(0,this.state.maxResults),
+            })
             .then((res) => {
                 /* Array of shows with the corresponding data:
                     name: Anime title
@@ -130,11 +142,27 @@ class App extends Component {
                     </div>
                     <div className="Middle-Box">
                         <div className="Search-Bar">
-                            <input onChange={this.setUserName} placeholder="Enter MAL Username"/>
-                            <button onClick={this.executeSearch}> Search </button>
+                            <input onChange={this.setUserName}
+                              placeholder="MAL Username (optional)"
+                            />
+                            <button onClick={this.executeSearch}>
+                              Search
+                            </button>
                         </div>
                         <div className="Genre-Dropdown">
-                            <Multiselect options={this.state.all_genres} onSelect={this.setGenres} onRemove={this.setGenres} displayValue="genre_name"/>
+                            <Multiselect
+                              options={this.state.allGenres}
+                              onSelect={this.setGenres}
+                              onRemove={this.setGenres}
+                              displayValue="genre_name"
+                              placeholder="Select Genres (optional)"
+                              hidePlaceholder={true}
+                            />
+                            <input
+                              type="text"
+                              placeholder="Max Results (Default 20)"
+                              onChange={this.setMaxGenres}
+                            />
                         </div>
                     </div>
                     <div className="Bottom-Box">

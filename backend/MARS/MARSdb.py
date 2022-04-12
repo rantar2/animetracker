@@ -2,6 +2,7 @@ from urllib import request, response
 from .models import AnimeEntry,Genre
 import secrets
 import requests
+import time
 clientID = "54082defd56574106879639dd3f91e47"
 
 # Database management class, sole responsibility is to update database with new information from MAL
@@ -62,4 +63,5 @@ class Database:
                     gen = Genre.objects.get_or_create(genre_name=g["name"], genre_id=g["id"])
                     newEntry.genres.add(gen[0])
             entriesRetrived += entriesToRetrive
+            time.sleep(5)  # Avoid MAL's request limit
         print(f"Finished updating db. Currently contains {AnimeEntry.objects.count()} entries from {Genre.objects.count()} genres.");

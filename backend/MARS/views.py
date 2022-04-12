@@ -30,25 +30,29 @@ class SearchView(APIView):
         return Response(returnString)
 
     def post(self, request):
+        """Call up backend reccomender with parameters provided by user"""
+        max_results = request.data["max_results"]
+        if max_results <= 0:
+            max_results = 20
+
         # If user provides no username (for non MAL users or otherwise)
         if request.data["userName"] == "":
             # If nothing is given (no username or other data)
             if len(request.data["selected_genres"]) == 2:
                 recString = Recommender.recommend({}, default_list, max_results, max_genres)
-
             # If genres only are given
             else:
-                #print(request.data["selected_genres"], type(request.data["selected_genres"]))
                 recString = Recommender.recommend({}, json.loads(request.data["selected_genres"]), max_results, max_genres)
             return Response(recString)
-        serializer = SearchSerializer(data=request.data)
+
         # If user provides a username and (optionally) some genres
+        serializer = SearchSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             selectedGenres = []
             if(serializer.data["selected_genres"]):
                 selectedGenres = json.loads(serializer.data["selected_genres"])
-            #Database.updateDB(1000)  #Adds/replaces first 1000 most popular shows on MAL.
+            #Database.updateDB(2500)  #Adds/replaces first 2500 most popular shows on MAL.
             userList = Recommender.getList(serializer.data["userName"])
             # Below, we limit ourselves to 20 top entries, and 5 genres.
             # Selected genres is based off the client-side genre dropdown, and will replace generated genres
