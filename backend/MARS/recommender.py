@@ -38,15 +38,15 @@ class Recommender:
 
         return userList
 
-    def recommend(userList, selectedGenres, reclimit, genrelimit):
-        # First creates a top genres list, then 
+    def recommend(userList, selectedGenres, recLimit, genreLimit):
+        # First creates a top genres list, then
         genreDict = {}
         titleList = []
         recDict = {}
         topGenres = []
 
         # Create a top genres list containing either the user selected genres or the algorithmically decided best genres
-        if(len(selectedGenres) == 0):
+        if len(selectedGenres) < genreLimit:
             for i in userList["data"]:
                 titleList.append(i["node"]["title"])
                 # Genre list influenced by user score
@@ -57,10 +57,11 @@ class Recommender:
                         genreDict[gname] = i["list_status"]["score"]
                     else:
                         genreDict[gname] += i["list_status"]["score"]
-            topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:genrelimit]
-        else:
-            topGenres = selectedGenres[:genrelimit]
+        for i in selectedGenres:
+            titleList.append(i)
+        topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:genreLimit]
 
+        print(topGenres)
         # Initialize the recommendations string (a JSON list of objects) and score shows based on how well they match the user criteria
         recString = "{\"anime\":["
         for genre in topGenres:
@@ -77,7 +78,7 @@ class Recommender:
                         recDict[i.name] += score
 
         # Sort the shows by their score and finialize the recommendations string to send to client
-        recDict = sorted(recDict, key=recDict.get, reverse=True)[:reclimit]
+        recDict = sorted(recDict, key=recDict.get, reverse=True)[:recLimit]
         for title in recDict:
             anime = AnimeEntry.objects.get(name=title)
             serializer = AnimeSerializer(anime)
