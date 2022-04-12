@@ -12,23 +12,37 @@ import json
 # Handles get and post requests from client, bridge between front end and backend
 # When client makes a get request, return a list of genres for use in the genre dropdown list
 # When client makes a post request, get the inputted user's anime list and return a list of recommendations
+
+max_results = 20
+max_genres = 5
+default_list = ['CGDCT']
 class SearchView(APIView):
     serializer_class = SearchSerializer
 
     def get(self, request):
-        #print(request)
         returnString = "{\"genre_list\":["
         for item in Genre.objects.all():
             serializer = GenreSerializer(item)
             content = JSONRenderer().render(serializer.data).decode("utf-8")
-            #print(content)
             returnString += content + ","
         returnString = returnString[:-1]
         returnString += "]}"
         return Response(returnString)
 
     def post(self, request):
+        # If user provides no username (for non MAL users or otherwise)
+        if request.data["userName"] == "":
+            # If nothing is given (no username or other data)
+            if len(request.data["selected_genres"]) == 2:
+                recString = Recommender.recommend({}, default_list, max_results, max_genres)
+
+            # If genres only are given
+            else:
+                #print(request.data["selected_genres"], type(request.data["selected_genres"]))
+                recString = Recommender.recommend({}, json.loads(request.data["selected_genres"]), max_results, max_genres)
+            return Response(recString)
         serializer = SearchSerializer(data=request.data)
+        # If user provides a username and (optionally) some genres
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             selectedGenres = []
@@ -37,7 +51,7 @@ class SearchView(APIView):
             #Database.updateDB(1000)  #Adds/replaces first 1000 most popular shows on MAL.
             userList = Recommender.getList(serializer.data["userName"])
             # Below, we limit ourselves to 20 top entries, and 5 genres.
-            # Selected genres is based off the client-side genre dropdown, and will overwrite generated genres
-            recString = Recommender.recommend(userList, selectedGenres, 20, 5)
+            # Selected genres is based off the client-side genre dropdown, and will replace generated genres
+            recString = Recommender.recommend(userList, selectedGenres, max_results, max_genres)
 
             return Response(recString)

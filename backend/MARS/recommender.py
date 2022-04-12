@@ -46,17 +46,17 @@ class Recommender:
         topGenres = selectedGenres
 
         # Create a top genres list containing either the user selected genres or the algorithmically decided best genres
-        print("user selected genres: "+str(selectedGenres))
-        for i in userList["data"]:
-            titleList.append(i["node"]["title"])
-            # Genre list influenced by user score
-            for genre in i["node"]["genres"]:
-                gname = genre["name"]
-                # Create or update the running raw score of a certain genre.
-                if not gname in genreDict:
-                    genreDict[gname] = i["list_status"]["score"]
-                else:
-                    genreDict[gname] += i["list_status"]["score"]
+        if len(userList.items()) != 0:
+            for i in userList["data"]:
+                titleList.append(i["node"]["title"])
+                # Genre list influenced by user score
+                for genre in i["node"]["genres"]:
+                    gname = genre["name"]
+                    # Create or update the running raw score of a certain genre.
+                    if not gname in genreDict:
+                        genreDict[gname] = i["list_status"]["score"]
+                    else:
+                        genreDict[gname] += i["list_status"]["score"]
         autoGenres = {k: v for k, v in sorted(genreDict.items(), key=lambda item:item[1], reverse=True)}
         # Add auto generated genre items if the user provides less than the limit of genres.
         # The user can add as many as they want, but if the limit is surpassed,
@@ -66,10 +66,6 @@ class Recommender:
                 break
             if item not in topGenres:
                 topGenres.append(item)
-        print(autoGenres)
-
-        #print("all genres: " + str(genreDict))
-        print("top genres: " + str(topGenres))
         # Initialize the recommendations string (a JSON list of objects) and score shows based on how well they match the user criteria
         recString = "{\"anime\":["
         for genre in topGenres:
@@ -95,5 +91,4 @@ class Recommender:
             recString += content + ","
         recString = recString[:-1]
         recString += "]}"
-
         return recString

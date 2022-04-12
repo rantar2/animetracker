@@ -5,6 +5,7 @@ import axios from "axios";
 import { Multiselect } from "multiselect-react-dropdown";
 import Recommendations from './components/Recommendations';
 
+
 // Base website manager, responsible for displaying the website and transmitting data to the backend
 class App extends Component {
     constructor(props) {
@@ -26,6 +27,10 @@ class App extends Component {
                 console.log(res)
 
                 var genreList = JSON.parse(res.data).genre_list
+                genreList.sort(function(a,b) {
+                  return (a.genre_name < b.genre_name) ? -1 :
+                   (a.genre_name > b.genre_name) ? 1 : 0;
+                });
                 this.setState({
                   all_genres: genreList,
                 })
@@ -40,7 +45,7 @@ class App extends Component {
     }
     // Updates selected genres list that will be sent to backend
     setGenres = event => {
-        console.log("List: " + JSON.stringify(event));
+        console.log("Selected Genre List: " + JSON.stringify(event));
         var list = [];
         for(var i = 0; i < event.length; i++) {
             list.push(event[i].genre_name);
@@ -50,7 +55,7 @@ class App extends Component {
         else
             this.setState({selected_genres: JSON.stringify(list)});
     }
-    
+
     // Sends all relevent information from this.state to the backend
     executeSearch = event => {
         event.preventDefault();
