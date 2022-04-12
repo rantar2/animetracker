@@ -39,29 +39,37 @@ class Recommender:
         return userList
 
     def recommend(userList, selectedGenres, recLimit, genreLimit):
-        # First creates a top genres list, then
+        # First creates a top genres list
         genreDict = {}
         titleList = []
         recDict = {}
-        topGenres = []
+        topGenres = selectedGenres
 
         # Create a top genres list containing either the user selected genres or the algorithmically decided best genres
-        if len(selectedGenres) < genreLimit:
-            for i in userList["data"]:
-                titleList.append(i["node"]["title"])
-                # Genre list influenced by user score
-                for genre in i["node"]["genres"]:
-                    gname = genre["name"]
-                    # Create or update the running raw score of a certain genre.
-                    if not gname in genreDict:
-                        genreDict[gname] = i["list_status"]["score"]
-                    else:
-                        genreDict[gname] += i["list_status"]["score"]
-        for i in selectedGenres:
-            titleList.append(i)
-        topGenres = sorted(genreDict, key=genreDict.get, reverse=True)[:genreLimit]
+        print("user selected genres: "+str(selectedGenres))
+        for i in userList["data"]:
+            titleList.append(i["node"]["title"])
+            # Genre list influenced by user score
+            for genre in i["node"]["genres"]:
+                gname = genre["name"]
+                # Create or update the running raw score of a certain genre.
+                if not gname in genreDict:
+                    genreDict[gname] = i["list_status"]["score"]
+                else:
+                    genreDict[gname] += i["list_status"]["score"]
+        autoGenres = {k: v for k, v in sorted(genreDict.items(), key=lambda item:item[1], reverse=True)}
+        # Add auto generated genre items if the user provides less than the limit of genres.
+        # The user can add as many as they want, but if the limit is surpassed,
+        # auto genres are ignored.
+        for item in autoGenres:
+            if len(topGenres) >= genreLimit:
+                break
+            if item not in topGenres:
+                topGenres.append(item)
+        print(autoGenres)
 
-        print(topGenres)
+        #print("all genres: " + str(genreDict))
+        print("top genres: " + str(topGenres))
         # Initialize the recommendations string (a JSON list of objects) and score shows based on how well they match the user criteria
         recString = "{\"anime\":["
         for genre in topGenres:
