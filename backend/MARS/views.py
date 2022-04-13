@@ -15,7 +15,7 @@ import json
 
 max_results = 20
 max_genres = 5
-default_list = ['CGDCT']
+default_list = ['Drama']
 class SearchView(APIView):
     serializer_class = SearchSerializer
 
@@ -37,6 +37,7 @@ class SearchView(APIView):
             max_results = 20
 
         mediaTypes = [request.data["tv"], request.data["movies"], request.data["specials"], request.data["ovas"], request.data["onas"]]
+        print(mediaTypes)
 
         # If user provides no username (for non MAL users or otherwise)
         if request.data["userName"] == "":

@@ -38,6 +38,7 @@ class App extends Component {
                   return (a.genre_name < b.genre_name) ? -1 :
                    (a.genre_name > b.genre_name) ? 1 : 0;
                 });
+                genreList.splice(35, 1);
                 genreList.splice(24, 1);
                 genreList.splice(17, 1);
                 this.setState({allGenres: genreList});
@@ -220,11 +221,11 @@ class App extends Component {
                                     <div>Movies: </div>
                                     <input type="checkbox" onChange={this.setMovie}></input>
                                     <div>Specials: </div>
-                                    <input type="checkbox"></input>
+                                    <input type="checkbox" onChange={this.setSpecials}></input>
                                     <div>OVAs: </div>
-                                    <input type="checkbox"></input>
+                                    <input type="checkbox" onChange={this.setOVAs}></input>
                                     <div>ONAs: </div>
-                                    <input type="checkbox"></input>
+                                    <input type="checkbox" onChange={this.setONAs}></input>
                                 </div>
                                 <input className="Max-Results"
                                     type="text"
