@@ -31,18 +31,21 @@ class SearchView(APIView):
 
     def post(self, request):
         """Call up backend reccomender with parameters provided by user"""
+        #Database.updateDB(5000)
         max_results = request.data["max_results"]
         if max_results <= 0:
             max_results = 20
+
+        mediaTypes = [request.data["tv"], request.data["movies"], request.data["specials"], request.data["ovas"], request.data["onas"]]
 
         # If user provides no username (for non MAL users or otherwise)
         if request.data["userName"] == "":
             # If nothing is given (no username or other data)
             if len(request.data["selected_genres"]) == 2:
-                recString = Recommender.recommend({}, default_list, max_results, max_genres)
+                recString = Recommender.recommend({}, default_list, mediaTypes, max_results, max_genres)
             # If genres only are given
             else:
-                recString = Recommender.recommend({}, json.loads(request.data["selected_genres"]), max_results, max_genres)
+                recString = Recommender.recommend({}, json.loads(request.data["selected_genres"]), mediaTypes, max_results, max_genres)
             return Response(recString)
 
         # If user provides a username and (optionally) some genres
@@ -56,6 +59,6 @@ class SearchView(APIView):
             userList = Recommender.getList(serializer.data["userName"])
             # Below, we limit ourselves to 20 top entries, and 5 genres.
             # Selected genres is based off the client-side genre dropdown, and will replace generated genres
-            recString = Recommender.recommend(userList, selectedGenres, max_results, max_genres)
+            recString = Recommender.recommend(userList, selectedGenres, mediaTypes, max_results, max_genres)
 
             return Response(recString)

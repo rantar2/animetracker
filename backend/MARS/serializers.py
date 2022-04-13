@@ -5,13 +5,13 @@ from .models import *
 class SearchSerializer(serializers.ModelSerializer):
     class Meta:
         model = Search
-        fields = ['userName', 'selected_genres']
+        fields = ['userName', 'selected_genres', 'tv', 'movies', 'specials', 'ovas', 'onas']
 
 # Used to transform AnimeEntry models from objects in our database into a readable a format, and visa versa
 class AnimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnimeEntry
-        fields = ['name', 'MAL_ID', 'rank', 'genres', 'main_picture', 'synopsis']
+        fields = ['name', 'MAL_ID', 'rank', 'genres', 'main_picture', 'synopsis', 'media_type']
         depth = 1
 
     def to_representation(self, instance):

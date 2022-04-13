@@ -38,7 +38,7 @@ class Recommender:
 
         return userList
 
-    def recommend(userList, selectedGenres, recLimit, genreLimit):
+    def recommend(userList, selectedGenres, mediaTypes, recLimit, genreLimit):
         # First creates a top genres list
         genreDict = {}
         titleList = []
@@ -54,9 +54,9 @@ class Recommender:
                     gname = genre["name"]
                     # Create or update the running raw score of a certain genre.
                     if not gname in genreDict:
-                        genreDict[gname] = i["list_status"]["score"]
+                        genreDict[gname] = i["list_status"]["score"] * i["list_status"]["score"]
                     else:
-                        genreDict[gname] += i["list_status"]["score"]
+                        genreDict[gname] += i["list_status"]["score"] * i["list_status"]["score"]
         autoGenres = {k: v for k, v in sorted(genreDict.items(), key=lambda item:item[1], reverse=True)}
         # Add auto generated genre items if the user provides less than the limit of genres.
         # The user can add as many as they want, but if the limit is surpassed,
@@ -72,7 +72,13 @@ class Recommender:
             # Basic query, filter, exclude watched shows, add to recommendations.
             # Matches solely based on user's top genres. Definitely could be refined.
             for i in AnimeEntry.objects.filter(genres__genre_name=genre):
-                if i.name not in titleList:
+                skip = (i.media_type == "tv" and mediaTypes[0] == False or
+                        i.media_type == "movie" and mediaTypes[1] == False or
+                        i.media_type == "special" and mediaTypes[2] == False or
+                        i.media_type == "ova" and mediaTypes[3] == False or
+                        i.media_type == "ona" and mediaTypes[4] == False)
+
+                if i.name not in titleList and not skip:
                     # MAL user score defines how highly a recommendation should be considered in our algorithm.
                     # Currently is pretty basic, but reasonably effective in our limited testing
                     score = 1 / (topGenres.index(genre) + 1)

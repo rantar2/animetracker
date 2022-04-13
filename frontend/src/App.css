@@ -61,6 +61,7 @@ html, body {
     flex-direction: column;
     font-size: calc(10px + 2vmin);
     color: white;
+    width: 100%;
 }
 .Bottom-Box {
     display: flex;
@@ -72,21 +73,65 @@ html, body {
 
 /* Specific styling for username search bar and genre dropdown */
 
+.Advanced-Options-Wrapper {
+    transition: 0.1s;
+}
+
+.Advanced-Options-Text {
+    padding-bottom: 16px;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: white;
+    font-size: 28px;
+    transition: none;
+}
+
+.Advanced-Options {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    opacity: 0;
+    pointer-events: none;
+    display: block;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: 0.1s;
+    font-size: 28px;
+    width: 100%;
+}
+
 .Search-Bar {
     display: relative;
     align-items: flex-start;
     justify-content: center;
-    font-size: calc(10px + 2vmin);
     color: white;
-    margin-bottom: 16px;
+    margin-top: 8px;
+    margin-bottom: 24px;
 }
 .Genre-Dropdown {
-    display: relative;
-    align-items: flex-end;
+    display: flex;
+    flex: 1 1 auto;
     justify-content: center;
-    font-size: calc(10px + 2vmin);
     color: black;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
+}
+
+.Media-Options {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.Media-Options div {
+    margin-right: 10px;
+}
+
+.Media-Options input {
+    transform: scale(1.75);
+    margin-right: 16px;
+    accent-color: #f66;
+    border: 0.15em solid #222;
 }
 
 .App-link {

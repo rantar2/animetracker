@@ -41,7 +41,7 @@ class Database:
             # We can also change the "fields" to include other data.
 
             entriesToRetrive = min(500,n-entriesRetrived)
-            url = f"https://api.myanimelist.net/v2/anime/ranking?ranking_type=bypopularity&fields=genres,main_picture,synopsis&limit={entriesToRetrive}&offset={entriesRetrived}"
+            url = f"https://api.myanimelist.net/v2/anime/ranking?ranking_type=bypopularity&fields=genres,main_picture,media_type,synopsis&limit={entriesToRetrive}&offset={entriesRetrived}"
             response = requests.get(url, headers= {
                 "X-MAL-CLIENT-ID": clientID
             })
@@ -54,14 +54,16 @@ class Database:
                     rank=anime["ranking"]["rank"],
                     MAL_ID=anime["node"]["id"],
                     main_picture=anime["node"]["main_picture"]["medium"],
-                    synopsis=anime["node"]["synopsis"]
+                    synopsis=anime["node"]["synopsis"],
+                    media_type=anime["node"]["media_type"]
                 )
                 newEntry.save()
                 # Iterate through a show's genres, adding genres to the Genre DB
                 # Also assigns genres to shows. This functionality is highly expensive.
-                for g in anime["node"]["genres"]:
-                    gen = Genre.objects.get_or_create(genre_name=g["name"], genre_id=g["id"])
-                    newEntry.genres.add(gen[0])
+                if("genres" in anime["node"]):
+                    for g in anime["node"]["genres"]:
+                        gen = Genre.objects.get_or_create(genre_name=g["name"], genre_id=g["id"])
+                        newEntry.genres.add(gen[0])
             entriesRetrived += entriesToRetrive
             time.sleep(5)  # Avoid MAL's request limit
         print(f"Finished updating db. Currently contains {AnimeEntry.objects.count()} entries from {Genre.objects.count()} genres.");

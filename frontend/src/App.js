@@ -16,7 +16,13 @@ class App extends Component {
             allGenres: [],
             selectedGenres: "[]",
             ready: false,
-            maxResults: 20
+            maxResults: 20,
+            showingOptions: false,
+            tv: true,
+            movies: false,
+            specials: false,
+            ovas: false,
+            onas: false
         }
     }
 
@@ -55,6 +61,22 @@ class App extends Component {
             this.setState({selectedGenres: JSON.stringify(list)});
     }
 
+    setTV = event => {
+        this.setState({tv: event.target.checked});
+    }
+    setMovie = event => {
+        this.setState({movies: event.target.checked});
+    }
+    setSpecials = event => {
+        this.setState({specials: event.target.checked});
+    }
+    setOVAs = event => {
+        this.setState({ovas: event.target.checked});
+    }
+    setONAs = event => {
+        this.setState({onas: event.target.checked});
+    }
+
     // Updates user preference for maximum results generated
     setMaxGenres = event => {
       var n = event.target.value.replace(/\D/g, '')
@@ -73,6 +95,11 @@ class App extends Component {
               userName: this.state.userName,
               selected_genres: this.state.selectedGenres,
               max_results: Math.max(0,this.state.maxResults),
+              tv: this.state.tv,
+              movies: this.state.movies,
+              specials: this.state.specials,
+              ovas: this.state.ovas,
+              onas: this.state.onas
             })
             .then((res) => {
                 /* Array of shows with the corresponding data:
@@ -93,6 +120,7 @@ class App extends Component {
                 for(var i = 0; i < rec.length; i++) {
                     console.log(rec[i].name);
                 }
+                document.getElementById("topBox").style.display = "none";
             })
             .catch((err) => console.log(err));
     };
@@ -122,6 +150,23 @@ class App extends Component {
         return {cols: cols, rows: rows};
     }
 
+    showAdvancedOptions = event => {
+        event.preventDefault();
+        if(this.state.showingOptions) {
+            document.getElementById("advancedOptions").style.pointerEvents = "none";
+            document.getElementById("advancedOptions").style.opacity = 0;
+            document.getElementById("advancedOptionsText").innerText = "Click to show advanced options";
+            document.getElementById("advancedOptionsWrapper").style.backgroundColor = "#ff6666";
+            this.setState({showingOptions: false});
+        } else {
+            document.getElementById("advancedOptions").style.pointerEvents = "auto";
+            document.getElementById("advancedOptions").style.opacity = 1;
+            document.getElementById("advancedOptionsText").innerText = "Click to hide advanced options";
+            document.getElementById("advancedOptionsWrapper").style.backgroundColor = "#222";
+            this.setState({showingOptions: true});
+        }
+    }
+
     // Renders the page by returning HTML and React components
     render() {
         var cols = ["Relevance"]
@@ -133,9 +178,9 @@ class App extends Component {
         }
         return (
             <div className="App">
-                <Header />
+                <Header ready={this.state.ready} />
                 <div  className="App-body">
-                    <div className="Top-Box">
+                    <div className="Top-Box" id="topBox">
                         <h2>
                             Find Anime Recommendations:
                         </h2>
@@ -149,20 +194,40 @@ class App extends Component {
                               Search
                             </button>
                         </div>
-                        <div className="Genre-Dropdown">
-                            <Multiselect
-                              options={this.state.allGenres}
-                              onSelect={this.setGenres}
-                              onRemove={this.setGenres}
-                              displayValue="genre_name"
-                              placeholder="Select Genres (optional)"
-                              hidePlaceholder={true}
-                            />
-                            <input
-                              type="text"
-                              placeholder="Max Results (Default 20)"
-                              onChange={this.setMaxGenres}
-                            />
+                        <div id="advancedOptionsWrapper" className="Advanced-Options-Wrapper">
+                            <button id="advancedOptionsText" className="Advanced-Options-Text" onClick={this.showAdvancedOptions}>
+                                Click to show advanced options
+                            </button>
+                            <div id="advancedOptions" className="Advanced-Options">
+                                <div className="Genre-Dropdown">
+                                    <Multiselect
+                                    options={this.state.allGenres}
+                                    onSelect={this.setGenres}
+                                    onRemove={this.setGenres}
+                                    displayValue="genre_name"
+                                    placeholder="Select Genres (optional)"
+                                    hidePlaceholder={true}
+                                    />
+                                </div>
+                                <div className="Media-Options">
+                                    <div>Show </div>
+                                    <div>TV: </div>
+                                    <input type="checkbox" defaultChecked="true" onChange={this.setTV}></input>
+                                    <div>Movies: </div>
+                                    <input type="checkbox" onChange={this.setMovie}></input>
+                                    <div>Specials: </div>
+                                    <input type="checkbox"></input>
+                                    <div>OVAs: </div>
+                                    <input type="checkbox"></input>
+                                    <div>ONAs: </div>
+                                    <input type="checkbox"></input>
+                                </div>
+                                <input className="Max-Results"
+                                    type="text"
+                                    placeholder="Max Results (Default 20)"
+                                    onChange={this.setMaxGenres}
+                                />
+                            </div>
                         </div>
                     </div>
                     <div className="Bottom-Box">

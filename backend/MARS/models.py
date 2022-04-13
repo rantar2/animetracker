@@ -7,6 +7,11 @@ import json
 class Search(models.Model):
     userName = models.CharField(max_length=16)
     selected_genres = models.CharField(max_length=8192)
+    tv = models.BooleanField()
+    movies = models.BooleanField()
+    specials = models.BooleanField()
+    ovas = models.BooleanField()
+    onas = models.BooleanField()
     def _str_(self):
         return self.title
 
@@ -19,6 +24,7 @@ class AnimeEntry(models.Model):
     genres = models.ManyToManyField("Genre")
     main_picture = models.CharField(max_length=120)
     synopsis = models.CharField(max_length=8192)
+    media_type = models.CharField(max_length=120)
     def _str_(self):
         return self.title
 
