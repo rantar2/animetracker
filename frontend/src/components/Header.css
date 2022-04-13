@@ -1,5 +1,5 @@
 .mars {
-    width: 256px;
+    width: 100%;
     height: 82px;
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -9,6 +9,7 @@
     font-style: normal;
     font-family: "Jacques Francois Shadow", serif;
     color: #a70c0c;
+    background-color: #fff;
     font-size: 72px;
     letter-spacing: 2px;
     line-height: 1.2;

@@ -76,7 +76,9 @@ class Recommender:
                         i.media_type == "movie" and mediaTypes[1] == False or
                         i.media_type == "special" and mediaTypes[2] == False or
                         i.media_type == "ova" and mediaTypes[3] == False or
-                        i.media_type == "ona" and mediaTypes[4] == False)
+                        i.media_type == "ona" and mediaTypes[4] == False or
+                        i.media_type == "music" or
+                        i.media_type == "unknown")
 
                 if i.name not in titleList and not skip:
                     # MAL user score defines how highly a recommendation should be considered in our algorithm.

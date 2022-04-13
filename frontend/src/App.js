@@ -38,8 +38,11 @@ class App extends Component {
                   return (a.genre_name < b.genre_name) ? -1 :
                    (a.genre_name > b.genre_name) ? 1 : 0;
                 });
+                genreList.splice(24, 1);
+                genreList.splice(17, 1);
                 this.setState({allGenres: genreList});
                 console.log(this.state.allGenres)
+
             })
             .catch((err) => console.log(err));
     }
@@ -178,8 +181,9 @@ class App extends Component {
         }
         return (
             <div className="App">
-                <Header ready={this.state.ready} />
+                
                 <div  className="App-body">
+                    <Header />
                     <div className="Top-Box" id="topBox">
                         <h2>
                             Find Anime Recommendations:
