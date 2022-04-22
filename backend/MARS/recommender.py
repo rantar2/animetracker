@@ -43,6 +43,7 @@ class Recommender:
         genreDict = {}
         titleList = []
         recDict = {}
+        recScores = {}
         topGenres = selectedGenres
 
         # Create a top genres list containing either the user selected genres or the algorithmically decided best genres
@@ -53,10 +54,14 @@ class Recommender:
                 for genre in i["node"]["genres"]:
                     gname = genre["name"]
                     # Create or update the running raw score of a certain genre.
+                    score = i["list_status"]["score"] * i["list_status"]["score"]
+                    # Weigh a genre lower if it's a very broad category
+                    if(gname == "Fantasy" or gname == "Action" or gname == "Comedy"):
+                        score *= 0.85
                     if not gname in genreDict:
-                        genreDict[gname] = i["list_status"]["score"] * i["list_status"]["score"]
+                        genreDict[gname] = score
                     else:
-                        genreDict[gname] += i["list_status"]["score"] * i["list_status"]["score"]
+                        genreDict[gname] += score
         autoGenres = {k: v for k, v in sorted(genreDict.items(), key=lambda item:item[1], reverse=True)}
         # Add auto generated genre items if the user provides less than the limit of genres.
         # The user can add as many as they want, but if the limit is surpassed,
@@ -83,13 +88,29 @@ class Recommender:
                 if i.name not in titleList and not skip:
                     # MAL user score defines how highly a recommendation should be considered in our algorithm.
                     # Currently is pretty basic, but reasonably effective in our limited testing
-                    score = 1 / (topGenres.index(genre) + 1)
+                    score = 1 / (topGenres.index(genre) + 1) * 1.5
+                    # Lower inital scores for genres people most likely won't be interested in
+                    if(genre != "Kids" and i.genres.filter(genre_name="Kids").exists()):
+                        score /= 2
+
                     if i.name not in recDict:
                         recDict[i.name] = score
+                        recScores[i.name] = i.score
                     else:
                         recDict[i.name] += score
+                        recScores[i.name] = i.score
+
+        # Go through recDict, this time increasing the score based on how highly rated the show is
+        for show in recDict:
+            # Add to this score based on how highly rated the show is
+            # Formula (s = average user score): |(s-7)|/(s-7) * (s-7)^2 / 9
+            # First section gets the sign of s-7, the second segment biases towards higher rated shows
+            s = recScores[show]
+            if(s != 7):
+                recDict[show] += ((abs(s - 7)/(s - 7)) * (s - 7) * (s - 7)) / 4
 
         # Sort the shows by their score and finialize the recommendations string to send to client
+        print(topGenres)
         recDict = sorted(recDict, key=recDict.get, reverse=True)[:recLimit]
         for title in recDict:
             anime = AnimeEntry.objects.get(name=title)

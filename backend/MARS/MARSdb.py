@@ -41,7 +41,7 @@ class Database:
             # We can also change the "fields" to include other data.
 
             entriesToRetrive = min(500,n-entriesRetrived)
-            url = f"https://api.myanimelist.net/v2/anime/ranking?ranking_type=bypopularity&fields=genres,main_picture,media_type,synopsis&limit={entriesToRetrive}&offset={entriesRetrived}"
+            url = f"https://api.myanimelist.net/v2/anime/ranking?ranking_type=bypopularity&fields=genres,main_picture,mean,media_type,synopsis&limit={entriesToRetrive}&offset={entriesRetrived}"
             response = requests.get(url, headers= {
                 "X-MAL-CLIENT-ID": clientID
             })
@@ -49,9 +49,14 @@ class Database:
             animeList = response.json()
             response.close()
             for anime in animeList["data"]:
+                if(not "mean" in anime["node"]):
+                    mean = 7
+                else:
+                    mean = anime["node"]["mean"]
                 newEntry = AnimeEntry(
                     name=anime["node"]["title"],
                     rank=anime["ranking"]["rank"],
+                    score=mean,
                     MAL_ID=anime["node"]["id"],
                     main_picture=anime["node"]["main_picture"]["medium"],
                     synopsis=anime["node"]["synopsis"],

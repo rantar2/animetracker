@@ -17,3 +17,9 @@
     text-align: left;
     padding-left: 20px;
 }
+.mars img {
+    display: absolute;
+    padding-bottom: 16px;
+    padding-right: 16px;
+    height: 84px !important;
+}

@@ -11,7 +11,7 @@ class SearchSerializer(serializers.ModelSerializer):
 class AnimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnimeEntry
-        fields = ['name', 'MAL_ID', 'rank', 'genres', 'main_picture', 'synopsis', 'media_type']
+        fields = ['name', 'MAL_ID', 'rank', 'score', 'genres', 'main_picture', 'synopsis', 'media_type']
         depth = 1
 
     def to_representation(self, instance):
