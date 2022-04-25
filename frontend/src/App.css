@@ -24,7 +24,7 @@ html, body {
 /* Basic page styling */
 
 .App-body {
-    background-color: #ff6666;
+    background-color: #E21e1e;
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
@@ -35,7 +35,7 @@ html, body {
 }
 
 .App-body h2 {
-    background-color: #ff6666;
+    background-color: #E21e1e;
     display: flex;
     flex: 1 1 auto;
     align-items: flex-end;
