@@ -40,7 +40,10 @@ class App extends Component {
                 });
                 genreList.splice(35, 1);
                 genreList.splice(24, 1);
+                genreList.splice(20, 1);
                 genreList.splice(17, 1);
+                genreList.splice(11, 1);
+                genreList.splice(6, 1);
                 this.setState({allGenres: genreList});
                 console.log(this.state.allGenres)
 
@@ -160,7 +163,7 @@ class App extends Component {
             document.getElementById("advancedOptions").style.pointerEvents = "none";
             document.getElementById("advancedOptions").style.opacity = 0;
             document.getElementById("advancedOptionsText").innerText = "Click to show advanced options";
-            document.getElementById("advancedOptionsWrapper").style.backgroundColor = "#ff6666";
+            document.getElementById("advancedOptionsWrapper").style.backgroundColor = "#d21e1e";
             this.setState({showingOptions: false});
         } else {
             document.getElementById("advancedOptions").style.pointerEvents = "auto";

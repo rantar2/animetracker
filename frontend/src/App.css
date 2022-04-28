@@ -24,7 +24,7 @@ html, body {
 /* Basic page styling */
 
 .App-body {
-    background-color: #E21e1e;
+    background-color: #d21e1e;
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
@@ -35,7 +35,7 @@ html, body {
 }
 
 .App-body h2 {
-    background-color: #E21e1e;
+    background-color: #d21e1e;
     display: flex;
     flex: 1 1 auto;
     align-items: flex-end;
@@ -82,7 +82,7 @@ html, body {
     background-color: rgba(0, 0, 0, 0);
     border: none;
     color: white;
-    font-size: 28px;
+    font-size: calc(8px + 2vmin);
     transition: none;
 }
 
@@ -96,7 +96,7 @@ html, body {
     align-items: center;
     justify-content: center;
     transition: 0.1s;
-    font-size: 28px;
+    font-size: calc(8px + 2vmin);
     width: 100%;
 }
 

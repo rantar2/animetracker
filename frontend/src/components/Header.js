@@ -1,6 +1,6 @@
 import React from 'react'
 import "./Header.css";
-import mars from "../images/mars.jpg"
+import mars from "../images/mars.png"
 
 // Displays the header of the website
 function Header(props) {
