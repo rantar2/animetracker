@@ -84,7 +84,7 @@ class App extends Component {
     // Updates user preference for maximum results generated
     setMaxGenres = event => {
       var n = event.target.value.replace(/\D/g, '')
-      if (n == "")
+      if (n === "")
         n="0";
       n = parseInt(n)
       this.setState({maxResults:n});
@@ -141,9 +141,9 @@ class App extends Component {
                 <span data-reactbasictable-value={"Entry" + i+1}> {i+1} </span>
             ]
             for(var key in this.state.recommended[i]) {
-                if (key=="main_picture") {
+                if (key==="main_picture") {
                     entry.push(<a href={"https://myanimelist.net/anime/"+this.state.recommended[i]["MAL_ID"]}>
-                    <img className="thumbnail" src={this.state.recommended[i][key]}>
+                    <img alt="thumbnail" className="thumbnail" src={this.state.recommended[i][key]}>
                     </img></a>)
                 } else {
                     entry.push(<span data-reactbasictable-value={key.toString()}> {this.state.recommended[i][key]} </span>)
